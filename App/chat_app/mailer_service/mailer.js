@@ -3,7 +3,6 @@ global.session = require('express-session');
 global.bodyParser = require('body-parser');
 global.bcrypt = require('bcryptjs');
 global.http = require('http');
-//global.CryptoJS = require('crypto-js');
 var rt = require('requestify');
 global.app = express();
 
@@ -16,8 +15,8 @@ global.nodemailer = require('nodemailer');
 global.transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'ibatj7@gmail.com',
-        pass: 'mMzanji#350'
+        user: '',
+        pass: ''
     }
 });
 
