@@ -24,6 +24,18 @@ services:
         - mongodb
     networks:
         - messaging
+  cron_job:
+    build: ./chat_app/schedule
+    volumes:
+        - ./chat_app:/chat_app
+    restart: on-failure
+    ports:
+      - "5009:5081"
+    depends_on:
+        - rabbitmq
+        - mongodb
+    networks:
+        - messaging
   password_hash:
     build: ./chat_app/password_hash
     ports:

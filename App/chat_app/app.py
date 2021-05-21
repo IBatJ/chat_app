@@ -11,6 +11,7 @@ from flask import (
 import os
 import time
 from datetime import date
+from flask.helpers import send_from_directory
 from pymongo import MongoClient
 import requests as req
 from user_class import User
@@ -1401,7 +1402,7 @@ def load_message():
 @app.route("/files/<key>/<file_name>")
 def download_target(key, file_name):
     if "username" in session:
-        path = os.path.join(FILE_UPLOADS, key + "\\documents\\" + file_name)
+        path = os.path.join(os.getcwd(),FILE_UPLOADS, key + "/documents/" + file_name)
         return send_file(path, as_attachment=True)
 
 
@@ -1524,6 +1525,30 @@ def delete_group(key):
                 )
             return redirect("/user_home")
 
+@app.route("/change_theme_message", methods=["POST","GET"])
+def change_theme_message():
+    if request.method == "POST":
+        details = request.get_json()
+        key = details["key"]
+        id_ = {"id": key}
+        theme = details["theme"]
+        hash_id = req.post(
+                "http://password_hash:9000/get_decrypted_hash",
+                data=json_util.dumps(id_),
+                headers={"Content-Type": "application/json"},
+            )
+        hash_id = hash_id.content.decode("utf-8")
+        #chat_key.update_one({"key":hash_id},{"$set": {"chat-theme":theme}})"""
+        return {"ok": json_util.dumps(key)}
+
+@app.route("/change_theme", methods=["POST","GET"])
+def change_theme():
+    if request.method == "POST":
+        details = request.get_json()
+        username = details["username"]
+        mode = details["mode"]
+        user_collection.update_one({"username":username},{"$set": {"theme":mode}})
+        return {"ok": json_util.dumps("ok")}
 
 if __name__ == "__main__":
     connection = pika.BlockingConnection(
